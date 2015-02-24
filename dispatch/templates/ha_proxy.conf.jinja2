@@ -1,0 +1,33 @@
+global
+    daemon
+    maxconn 4096
+
+defaults
+    mode http
+    timeout connect 5000ms
+    timeout client 50000ms
+    timeout server 50000ms
+
+frontend http-in
+    bind *:80
+    {% for app_name in apps.keys() -%}
+    acl is_{{ app_name }} hdr_end(host) -i {{ app_name }}.{{ base_domain }}
+    {% endfor %}
+
+    {% for app_name in apps.keys() -%}
+    use_backend {{ app_name }}_cluster if is_{{ app_name }}
+    {% endfor %}
+
+{% for app_name, app_params_list in apps.items() %}
+backend {{ app_name }}_cluster
+    balance roundrobin
+    option httpclose
+    option forwardfor
+    {% for app_params in app_params_list -%}
+    server server{{ loop.index }}_{{ app_name }} {{ app_params.ip }}:{{ app_params.port }} check maxconn 32
+    {% endfor %}
+{% endfor %}
+
+listen admin
+    bind 127.0.0.1:8080
+    stats enable

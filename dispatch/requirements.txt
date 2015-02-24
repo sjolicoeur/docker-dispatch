@@ -1,0 +1,6 @@
+docker-py==1.0.0
+ipython==2.4.1
+python-etcd==0.3.2
+requests==2.1.0
+simplejson==3.6.5
+supervisor==3.1.3

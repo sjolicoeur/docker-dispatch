@@ -12,6 +12,8 @@ global
     # # For more information, see ciphers(1SSL).
     # ssl-default-bind-ciphers kEECDH+aRSA+AES:kRSA+AES:+AES256:RC4-SHA:!kEDH:!LOW:!EXP:!MD5:!aNULL:!eNULL
 
+userlist cloud_admins
+    user admin  insecure-password {{ password }} # make this a var
 
 defaults
     mode http
@@ -43,10 +45,8 @@ backend {{ app_name }}_cluster
     {% endfor %}
     {% if app_params_dict.app_type == "wwwp" %}
     #Authentication realm. This can be set to anything. Escape space characters with a backslash.
-    stats realm HAProxy\ Statistics 
-
-    #The user/pass you want to use. Change this password!
-    stats auth admin:catn1pp3rs 
+    acl AuthOkay_{{ app_name }} http_auth(cloud_admins)
+    http-request auth realm {{ app_name }} if !AuthOkay_{{ app_name }}
     {% endif %}
 {% endfor %}
 
@@ -66,7 +66,7 @@ listen stats 0.0.0.0:9090       #Listen on all IP's on port 9000
     timeout server 30000
 
     #This is the virtual URL to access the stats page
-    stats uri /haproxy_stats        
+    stats uri /        
 
     #Authentication realm. This can be set to anything. Escape space characters with a backslash.
     stats realm HAProxy\ Statistics 

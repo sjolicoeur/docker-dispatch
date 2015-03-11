@@ -41,6 +41,13 @@ backend {{ app_name }}_cluster
     {% for app_params in app_params_list -%}
     server server{{ loop.index }}_{{ app_name }} {{ app_params.ip }}:{{ app_params.port }} check maxconn 32
     {% endfor %}
+    {% if app_params.app_type == "wwwp" %}
+    #Authentication realm. This can be set to anything. Escape space characters with a backslash.
+    stats realm HAProxy\ Statistics 
+
+    #The user/pass you want to use. Change this password!
+    stats auth admin:catn1pp3rs 
+    {% endif %}
 {% endfor %}
 
 # listen admin
@@ -48,7 +55,7 @@ backend {{ app_name }}_cluster
 #     stats enable
 
 listen admin
-    bind *:8080
+    bind *:8181
     stats enable
 
 listen stats 0.0.0.0:9090       #Listen on all IP's on port 9000

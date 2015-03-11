@@ -63,7 +63,7 @@ def read_from_marathon():
             "port": 9090,
             "app_type": "wwwp"
         },
-        "ha_admin" {
+        "ha_admin": {
             "ip" : "localhost",
             "port": 8181,
             "app_type": "wwwp"
@@ -79,8 +79,11 @@ def read_from_marathon():
             port = task.service_ports[0]
             ip = task.host
             if app_name not in apps:
-                apps[app_name] = []
-            apps[app_name].append({"ip":ip, "port": port, "app_type": app_info['app_type']})
+                apps[app_name] = {
+                    "app_type": app_info['app_type'],
+                    "config":[]
+                }
+            apps[app_name]["config"].append({"ip":ip, "port": port})
     return apps
 
 def generate_config(apps):
@@ -95,7 +98,7 @@ def compare_to_current_config(compare_to):
     return config_file == compare_to
 
 def register_apps():
-    apps = read_from_etcd()
+    apps = read_from_marathon()
     content = generate_config(apps)
     config_is_identical = compare_to_current_config(content)
     if not config_is_identical:

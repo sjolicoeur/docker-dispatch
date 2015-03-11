@@ -33,15 +33,15 @@ frontend http-in
 # backend default
 #     redirect location http://google.com/
 
-{% for app_name, app_params_list in apps.items() %}
+{% for app_name, app_params_dict in apps.items() %}
 backend {{ app_name }}_cluster
     balance roundrobin
     option httpclose
     option forwardfor
-    {% for app_params in app_params_list -%}
+    {% for app_params in app_params_dict.config -%}
     server server{{ loop.index }}_{{ app_name }} {{ app_params.ip }}:{{ app_params.port }} check maxconn 32
     {% endfor %}
-    {% if app_params.app_type == "wwwp" %}
+    {% if app_params_dict.app_type == "wwwp" %}
     #Authentication realm. This can be set to anything. Escape space characters with a backslash.
     stats realm HAProxy\ Statistics 
 

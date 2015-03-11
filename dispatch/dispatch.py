@@ -88,7 +88,7 @@ def read_from_marathon():
 
 def generate_config(apps):
     template = env.get_template('ha_proxy.conf.jinja2')
-    content = template.render(apps=apps, base_domain=os.getenv('DISPATCH_BASE_DOMAIN','example.com'))
+    content = template.render(apps=apps, base_domain=os.getenv('DISPATCH_BASE_DOMAIN','heartlabs.co'))
     return content
 
 def compare_to_current_config(compare_to):

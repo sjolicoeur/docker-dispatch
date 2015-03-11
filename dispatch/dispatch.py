@@ -75,7 +75,7 @@ def read_from_marathon():
             app_type = app_info['app_type']
         else:
             app_name = app_id.replace("/", "")
-            app_type = www
+            app_type = 'www'
         port = task.service_ports[0]
         ip = task.host
         if app_name not in apps:

@@ -49,23 +49,19 @@ def read_from_marathon():
     """
     apps = {
         "mesos" : {
-            "ip" : "localhost",
-            "port": 5050,
+            "config":[{"ip" : "localhost", "port": 5050 }],
             "app_type": "wwwp"
             },
         "marathon" : {
-            "ip" : "localhost",
-            "port": 8080,
+            "config":[{"ip" : "localhost", "port": 8080}],            
             "app_type": "wwwp"
         },
         "hap": {
-            "ip" : "localhost",
-            "port": 9090,
+            "config":[{"ip" : "localhost", "port": 9090}],            
             "app_type": "wwwp"
         },
         "ha_admin": {
-            "ip" : "localhost",
-            "port": 8181,
+            "config":[{"ip" : "localhost", "port": 8181}],            
             "app_type": "wwwp"
         }
     }
@@ -76,14 +72,18 @@ def read_from_marathon():
         if rule_match:
             app_info = rule_match.groupdict() # {'app_name': 'de-a.sfsfds.mo', 'app_type': 'wwws'}
             app_name = app_info['app_name']
-            port = task.service_ports[0]
-            ip = task.host
-            if app_name not in apps:
-                apps[app_name] = {
-                    "app_type": app_info['app_type'],
-                    "config":[]
-                }
-            apps[app_name]["config"].append({"ip":ip, "port": port})
+            app_type = app_info['app_type']
+        else:
+            app_name = app_id.replace("/", "")
+            app_type = www
+        port = task.service_ports[0]
+        ip = task.host
+        if app_name not in apps:
+            apps[app_name] = {
+                "app_type": app_type,
+                "config":[]
+            }
+        apps[app_name]["config"].append({"ip":ip, "port": port})
     return apps
 
 def generate_config(apps):

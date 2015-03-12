@@ -49,7 +49,7 @@ def read_from_marathon():
     """
     apps = {
         "mesos" : {
-            "config":[{"ip" : "localhost", "port": 5050 }],
+            "config":[{"ip" : "172.30.1.191", "port": 5050 }],
             "app_type": "wwwp"
             },
         "marathon" : {

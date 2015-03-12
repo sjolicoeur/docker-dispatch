@@ -23,7 +23,7 @@ c = MarathonClient(MARATHON_HOST)
 
 
 
-
+LOCAL_IP = os.getenv("LOCAL_IP", "localhost")
 
 
 HAPROXY_RESTART_CMD = [
@@ -49,19 +49,19 @@ def read_from_marathon():
     """
     apps = {
         "mesos" : {
-            "config":[{"ip" : "172.30.1.191", "port": 5050 }],
+            "config":[{"ip" : LOCAL_IP, "port": 5050 }],
             "app_type": "wwwp"
             },
         "marathon" : {
-            "config":[{"ip" : "localhost", "port": 8080}],            
+            "config":[{"ip" : LOCAL_IP, "port": 8080}],            
             "app_type": "wwwp"
         },
         "hap": {
-            "config":[{"ip" : "localhost", "port": 9090}],            
+            "config":[{"ip" : LOCAL_IP, "port": 9090}],            
             "app_type": "wwwp"
         },
         "ha_admin": {
-            "config":[{"ip" : "localhost", "port": 8181}],            
+            "config":[{"ip" : LOCAL_IP, "port": 8181}],            
             "app_type": "wwwp"
         }
     }

@@ -14,17 +14,17 @@ log = logging.getLogger(__name__)
 
 BASE_DIR = os.path.dirname(__file__)
 
+# ENV VARS
 MARATHON_HOST = os.getenv("MARATHON_HOSTS", "http://localhost:8080")
 MESOS_HOST = os.getenv("MESOS_HOSTS", "http://localhost:5050")
+LOCAL_IP = os.getenv("LOCAL_IP", "localhost")
+BASE_DOMAIN=os.getenv('DISPATCH_BASE_DOMAIN','heartlabs.co')
+HA_PASSWORD=os.getenv('HA_PASSWORD', 'catn1pp3rZ')
 
+###
 c = MarathonClient(MARATHON_HOST)
 # or multiple servers:
 # c = MarathonClient(['http://host1:8080', 'http://host2:8080'])
-
-
-
-LOCAL_IP = os.getenv("LOCAL_IP", "localhost")
-
 
 HAPROXY_RESTART_CMD = [
         '/usr/sbin/haproxy '
@@ -32,7 +32,7 @@ HAPROXY_RESTART_CMD = [
         '-p /var/run/haproxy.pid '
         '-sf $(cat /var/run/haproxy.pid)'
     ]
-
+# /usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -p /var/run/haproxy.pid -sf $(cat /var/run/haproxy.pid)
 
 env = Environment(loader=FileSystemLoader(os.path.join(BASE_DIR, 'templates')))
 
@@ -90,8 +90,9 @@ def generate_config(apps):
     template = env.get_template('ha_proxy.conf.jinja2')
     content = template.render(
             apps=apps,
-            base_domain=os.getenv('DISPATCH_BASE_DOMAIN','heartlabs.co'),
-            password=os.getenv('HA_PASSWORD', 'catn1pp3rZ'))
+            base_domain=BASE_DOMAIN,
+            password=HA_PASSWORD
+        )
     return content
 
 def compare_to_current_config(compare_to):
@@ -112,7 +113,5 @@ def register_apps():
 
 if __name__ == '__main__':
     flag = True
-    while(flag):
-        log.info("Looking to register apps to HAProxy")
-        register_apps()
-        time.sleep(60*1)
+    log.info("Looking to register apps to HAProxy")
+    register_apps()

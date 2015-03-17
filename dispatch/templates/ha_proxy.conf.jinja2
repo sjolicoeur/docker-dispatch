@@ -24,7 +24,7 @@ defaults
 frontend http-in
     bind *:80
     {% for app_name in apps.keys() -%}
-    acl is_{{ app_name }} hdr_end(host) -i {{ app_name }}.{{ base_domain }}
+    acl is_{{ app_name }} hdr_dom(host) -i {{ app_name }}.{{ base_domain }}
     {% endfor %}
 
     {% for app_name in apps.keys() -%}
@@ -69,10 +69,10 @@ listen stats 0.0.0.0:9090       #Listen on all IP's on port 9000
     stats uri /        
 
     #Authentication realm. This can be set to anything. Escape space characters with a backslash.
-    stats realm HAProxy\ Statistics 
+    #stats realm HAProxy\ Statistics 
 
     #The user/pass you want to use. Change this password!
-    stats auth admin:catn1pp3rs   
+    #stats auth admin:catn1pp3rs   
 
     #This allows you to take down and bring up back end servers.
     #This will produce an error on older versions of HAProxy.

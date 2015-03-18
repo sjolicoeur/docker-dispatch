@@ -39,11 +39,10 @@ def send_job(job_info):
         "ports":[job_info['port']],
         "env": {}
     }
-    # print "--------"
+
     for name, value in job_info['env_vars']:
-        # print name, value
         data_packet['env'][name] = value
-    # print data_packet
+
     url = 'http://localhost:8080/v2/apps/demo?force=true'
     try:
         r = requests.post(url, data=json.dumps(data_packet))
@@ -107,7 +106,7 @@ def home(request):
         )
     else:
         print "is ajax?",request.is_ajax()
-        return HttpResponseNotFound("DENIED")
+        return HttpResponse("SIGH!")
     
 
 

@@ -63,8 +63,8 @@ def read_from_marathon():
         "ha_admin": {
             "config":[{"ip" : LOCAL_IP, "port": 8181}],            
             "app_type": "wwwp"
-        }
-        "docks": {
+        },
+        "registry": {
             "config":[{"ip" : LOCAL_IP, "port": 5959}],            
             "app_type": "www"
 

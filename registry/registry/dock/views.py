@@ -9,7 +9,9 @@ from registry.dock.validator import DockValidator
 import os 
 import json
 import requests
+import logging
 
+log = logging.getLogger(__name__)
 BASE_DOMAIN=os.getenv('DISPATCH_BASE_DOMAIN','heartlabs.co')
 
 
@@ -43,10 +45,14 @@ def send_job(job_info):
     for name, value in job_info['env_vars']:
         data_packet['env'][name] = value
 
-    url = 'http://localhost:8080/v2/apps/demo?force=true'
+    url = 'http://localhost:8080/v2/apps/?force=true'
     try:
+        log.warn(data_packet)
+        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         r = requests.post(url, data=json.dumps(data_packet))
-        return True, "success!"
+        if r.ok:
+            return True, "success!"
+        return False, "Failed status: %s" % str(r.status_code)
     except requests.ConnectionError:
         return False, "Failed to connect"
 # ubuntu@172:~$ http -v PUT http://localhost:8080/v2/apps/demo?force=true @cpywww.json

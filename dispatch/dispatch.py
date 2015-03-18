@@ -64,6 +64,11 @@ def read_from_marathon():
             "config":[{"ip" : LOCAL_IP, "port": 8181}],            
             "app_type": "wwwp"
         }
+        "docks": {
+            "config":[{"ip" : LOCAL_IP, "port": 5959}],            
+            "app_type": "www"
+
+        }
     }
     app_regex = r'^/(?P<app_name>[a-zA-Z0-9|\-|\.]+)\.(?P<app_type>(www)|(wwwp)|(wwws))$'
     for task in  c.list_tasks():

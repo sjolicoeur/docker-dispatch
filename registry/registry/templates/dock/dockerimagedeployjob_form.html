@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>serialize demo</title>
+  <style>
+  body, select {
+    font-size: 12px;
+  }
+  form {
+    margin: 5px;
+  }
+  p {
+    color: red;
+    margin: 5px;
+    font-size: 14px;
+  }
+  b {
+    color: blue;
+  }
+  </style>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body>
+	<p id="msg"></p>
+<ul>
+	{% for dock in docks %}
+		<li>{{ dock.title }}</li>
+		<li>
+			<ul>
+				<li>{{ dock|pprint}}</li>
+			</ul>
+		</li>
+	{% endfor %}
+<ul>
+
+
+<form action="." method=POST id="dock">
+	{# csrf_token #}
+<table>
+	<tr>
+		<th>
+			<label for="id_title">
+				title
+			</label>
+		</th>
+		<td colspan=3>
+			<input id="id_title" maxlength="90" name="title" type="text" value="" />
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="id_image_name">image name</label>
+		</th>
+		<td>
+			<input id="id_image_name" maxlength="90" name="image_name" type="text" value="" />
+		</td>
+
+		<th>
+			<label for="id_tag_name">
+				tag name:
+			</label>
+		</th>
+		<td>
+			<input id="id_tag_name" maxlength="30" name="tag_name" type="text" value="latest" />
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="id_exposedport_set-0-port">
+				Port:
+			</label>
+		</th>
+		<td>
+			<input id="id_exposedport_set-0-port" name="port" type="number" />
+		</td>
+	
+		<th>
+			<label for="id_type">type</label>
+		</th>
+		<td>
+			<select id="id_type" name="type">
+				<option value="www" selected="selected">HTTP service</option>
+				<option value="wwws">HTTPS service</option>
+				<option value="wwwp">Password Protect</option>
+			</select>
+		</td>
+	</tr>
+
+	
+	<tr  colspan=4>
+		<th>
+			<label for="id_cpu">
+				CPUs
+			</label>
+		</th>
+		<td>
+			<input id="id_cpu" name="cpu" value="0.1" type="range" min="0.01" max="5.0" step="0.01" oninput="outputCPU(value)"/>
+			<output for=id_cpu id="display_id_cpu">0.01</output>
+		</td>
+	</tr>
+	<tr  colspan=4>
+		<th>
+			<label for="id_memory">
+				memory
+			</label>
+		</th>
+		<td>
+			<input id="id_memory" name="memory"  value="16" type="range" min="16" max="500" step="8" oninput="outputMEM(value)"/>
+			<output for=id_memory id="display_id_memory">16</output>
+		</td>
+	</tr>
+	<tr  colspan=4>
+		<th>
+			<label for="id_instances">
+				instances
+			</label>
+		</th>
+		<td>
+			<input id="id_instances" name="instances" value="1" type="range" min="0" max="10" step="1" oninput="outputInstances(value)"/>
+			<output for=id_instances id="display_id_instances">1</output>
+		</td>
+	</tr>
+
+
+
+
+
+
+<tr id="env_vars">
+	<td colspan=2>
+		<tr>
+			<th>
+				<label for="id_envvariables_set-0-name">Name</label>
+			</th>
+			<th>
+				<label for="id_envvariables_set-0-value">Value</label>
+			</th>
+			
+		</tr>
+		{% for i in num_env %}
+		<tr>
+			<td>
+				<input attr-env-var={{i}} maxlength="20" name="name" type="text" value=""/>
+			</td>
+			<td>
+				<input attr-env-var={{i}} maxlength="35" name="value" type="text" value=""/>
+			</td>
+		</tr>
+		
+		{% endfor %}
+
+	</td>
+</tr>
+
+</table>
+<input type=submit onclick="send_form();return false;">
+</form>
+<h2>JSON format</h2>
+<pre>
+	{
+		'title': &lt;string&gt;, 
+		'image_name': &lt;sting&gt;, 
+		'port': &lt;int&gt;, 
+		'instances': &lt;int:rage(0-5)&gt;, 
+		'tag_name': u'latest', 
+		'memory': &lt;int:range(16:500)&gt;, 
+		'type': &lt;choice:[www/wwws/wwwp]&gt;, 
+		'cpu': &lt;float:range(0.01-5.0)&gt;
+		'env_vars': [
+			{
+				'name': &lt;string&gt;
+				'value': &lt;string&gt;
+			}
+		]
+	}
+</pre>
+<script>
+function send_form(){
+	var result = {};
+	//
+	result['title'] = $('input[name="title"]').val();
+	result['image_name'] = $('input[name="image_name"]').val();
+	result['type'] = $('select[name="type"]').val();
+	result['tag_name'] = $('input[name="tag_name"]').val();
+	result['cpu'] = $('input[name="cpu"]').val();
+	result['memory'] = $('input[name="memory"]').val();
+	result['instances'] = $('input[name="instances"]').val();
+	result['port'] = $('input[name="port"]').val();
+	//
+	var num_lines = $("[attr-env-var]").length/2;
+	var env_vars = [];
+	for (var i=0;i<num_lines;i++) {
+		var name = $("[attr-env-var="+i+"][name='name']").val();
+		var value = $("[attr-env-var="+i+"][name='value']").val();
+		if (name) {
+			env_vars.push({'name':name, 'value':value});
+		}
+	}
+	result['env_vars'] = env_vars;
+	console.table(env_vars);
+	console.log(JSON.stringify(result));
+
+	$.ajax({
+		method: "POST",
+		// contentType: 'application/json; charset=utf-8',
+		url: $('#dock').attr('action'),
+		// data: $.toJSON(result),
+		// data: result,
+		// data: JSON.stringify(result),
+		data: {json: JSON.stringify(result)},
+		dataType: 'json',
+		success: function(res) {
+			if (res.status === "error") {
+				alert(res['errors']);
+			}
+	        if (res.status === "ok") {
+            	$('#msg').html("URL: "+ res.data.url + " ("+ res.data.service_type +") <br> Docker Image: [" + res.data.img_string + "]");
+            	
+            	
+            	
+
+	        }
+	        // console.table(res);
+	        // console.log(res);
+
+	    }
+	})
+	return false
+}
+function outputCPU(vol) {
+	document.querySelector('#display_id_cpu').value = vol;
+}
+function outputMEM(vol) {
+	document.querySelector('#display_id_memory').value = vol;
+}
+function outputInstances(vol) {
+	document.querySelector('#display_id_instances').value = vol;
+}
+
+</script>
+<hr>
+
+
+<body>
+</html>

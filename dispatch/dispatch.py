@@ -68,7 +68,7 @@ def read_from_marathon():
             "config":[{"ip" : LOCAL_IP, "port": 5959}],            
             "app_type": "www"
 
-        }
+        },        
         "jenkins" {
             "config":[{"ip": "172.30.1.43", "port": 8080}],
             "app_type": "www"

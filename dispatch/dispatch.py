@@ -69,6 +69,10 @@ def read_from_marathon():
             "app_type": "www"
 
         }
+        "jenkins" {
+            "config":[{"ip": "172.30.1.43", "port": 8080}],
+            "app_type": "www"
+        }
     }
     app_regex = r'^/(?P<app_name>[a-zA-Z0-9|\-|\.]+)\.(?P<app_type>(www)|(wwwp)|(wwws))$'
     for task in  c.list_tasks():

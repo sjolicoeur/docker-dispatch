@@ -73,6 +73,11 @@ def read_from_marathon():
             "config":[{"ip": "172.30.1.43", "port": 8080}],
             "app_type": "www"
         },
+        "docker-repo": {
+            "config":[{"ip": "172.30.1.43", "port": 5000}],
+            "app_type": "wwwp"
+            
+        },
     }
     app_regex = r'^/(?P<app_name>[a-zA-Z0-9|\-|\.]+)\.(?P<app_type>(www)|(wwwp)|(wwws))$'
     for task in  c.list_tasks():

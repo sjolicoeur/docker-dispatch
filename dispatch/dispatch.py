@@ -50,32 +50,39 @@ def read_from_marathon():
     apps = {
         "mesos" : {
             "config":[{"ip" : LOCAL_IP, "port": 5050 }],
-            "app_type": "wwwp"
+            "app_type": "wwwp",
+            "domain": "{}.{}".format("mesos", BASE_DOMAIN)
             },
         "marathon" : {
             "config":[{"ip" : LOCAL_IP, "port": 8080}],            
-            "app_type": "wwwp"
+            "app_type": "wwwp",
+            "domain": "{}.{}".format("marathon", BASE_DOMAIN)
         },
         "hap": {
             "config":[{"ip" : LOCAL_IP, "port": 9090}],            
-            "app_type": "wwwp"
+            "app_type": "wwwp",
+            "domain": "{}.{}".format("hap", BASE_DOMAIN)
         },
         "ha_admin": {
             "config":[{"ip" : LOCAL_IP, "port": 8181}],            
-            "app_type": "wwwp"
+            "app_type": "wwwp",
+            "domain": "{}.{}".format("ha_admin", BASE_DOMAIN)
         },
         "registry": {
             "config":[{"ip" : LOCAL_IP, "port": 5959}],            
-            "app_type": "www"
+            "app_type": "www",
+            "domain": "{}.{}".format("registry", BASE_DOMAIN)
 
         },        
         "jenkins": {
             "config":[{"ip": "172.30.1.43", "port": 8080}],
-            "app_type": "www"
+            "app_type": "www",
+            "domain": "{}.{}".format("jenkins", BASE_DOMAIN)
         },
         "docker-repo": {
             "config":[{"ip": "172.30.1.43", "port": 5000}],
-            "app_type": "wwwp"
+            "app_type": "wwwp",
+            "domain": "{}.{}".format("docker-repo", BASE_DOMAIN)
         },
     }
     app_regex = r'^/(?P<app_name>[a-zA-Z0-9|\-|\.]+)\.(?P<app_type>(www)|(wwwp)|(wwws))$'
@@ -127,6 +134,11 @@ def register_apps():
             f.write(content)
         subprocess.Popen(HAPROXY_RESTART_CMD, stderr=subprocess.STDOUT, stdout=subprocess.PIPE, shell=True)
 
+def print_config():
+    from pprint import pprint
+    apps = read_from_marathon()
+    content = generate_config(apps)
+    print pprint(apps)
 
 if __name__ == '__main__':
     flag = True

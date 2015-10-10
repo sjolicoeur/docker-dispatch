@@ -94,8 +94,7 @@ def read_from_marathon():
         if app_name not in apps:
             apps[app_name] = {
                 "app_type": app_type,
-                "config":[],
-
+                "config":[]
             }
         apps[app_name]["config"].append({"ip":ip, "port": port})
         # get the app

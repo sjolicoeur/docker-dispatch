@@ -28,7 +28,7 @@ class DockValidator(object):
 
     def clean_title(self, data):
         try:
-            cleaned = re.match(r'^(?P<title>[a-zA-Z0-9|\-|\_]*)$', data)
+            cleaned = re.match(r'^(?P<title>[a-zA-Z0-9|\-]*)$', data)
             if cleaned:
                 result = cleaned.groupdict()['title']
                 self.clean_data['title'] = result

@@ -17,14 +17,14 @@ userlist cloud_admins
 
 defaults
     mode http
-    timeout connect 5000ms
+    timeout connect 50000ms
     timeout client 50000ms
     timeout server 50000ms
 
 frontend http-in
     bind *:80
     {% for app_name in apps.keys() -%}
-    acl is_{{ app_name }} hdr_dom(host) -i {{ app_name }}.{{ base_domain }}
+    acl is_{{ app_name }} hdr_dom(host) -i {{ apps[app_name]["domain"]  }}
     {% endfor %}
 
     {% for app_name in apps.keys() -%}

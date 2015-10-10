@@ -90,9 +90,14 @@ def read_from_marathon():
         if app_name not in apps:
             apps[app_name] = {
                 "app_type": app_type,
-                "config":[]
+                "config":[],
+
             }
         apps[app_name]["config"].append({"ip":ip, "port": port})
+        # get the app
+        marathon_app = c.get_app(task.app_id)
+        domain = marathon_app.env.get("domain", "{}.{}".format(app_name, BASE_DOMAIN) )
+        apps[app_name]["domain"] = domain
     return apps
 
 def generate_config(apps):

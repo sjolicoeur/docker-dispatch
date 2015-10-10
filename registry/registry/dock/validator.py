@@ -55,7 +55,7 @@ class DockValidator(object):
         # u'1', 
         try:
             result = int(data)
-            if  0 < result < 10:
+            if  0 <= result < 10:
                 self.clean_data['instances'] = result
             else:
                 raise ValueError

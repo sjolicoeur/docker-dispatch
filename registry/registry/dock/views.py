@@ -39,7 +39,8 @@ def send_job(job_info):
         "cpus": job_info['cpu'],
         "mem": job_info['memory'],
         "ports":[job_info['port']],
-        "env": {}
+        "env": {},
+        "uris": [ "file:///home/ubuntu/.dockercfg" ],
     }
 
     for name, value in job_info['env_vars']:

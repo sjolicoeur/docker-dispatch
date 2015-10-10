@@ -68,13 +68,20 @@ def home(request):
             data = simplejson.loads(request.POST.get('json'))
             print data
             validator = DockValidator(data)
+
             if validator.is_valid():
-                result = {
-                    "data": {
-                        "url": "%s.%s" % (
+                domain = "%s.%s" % (
                                 validator.clean_data['title'],
                                 BASE_DOMAIN
-                            ),
+                            )
+                if "env" in data:
+                    for val in data["env"]:
+                        if "name" in val and val["name"] == "domain":
+                            domain = val["value"]
+                
+                result = {
+                    "data": {
+                        "url": domain,
                         "img_string": "%s:%s" % (
                                 validator.clean_data['image_name'],
                                 validator.clean_data['tag_name'],

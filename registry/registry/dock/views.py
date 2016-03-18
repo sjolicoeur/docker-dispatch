@@ -34,7 +34,7 @@ def send_job(job_info):
                 ]
             }
         },
-        "id": "%s.%s" % (job_info['title'], job_info['type']),
+        "id": "%s.%s" % (job_info['title'].lower(), job_info['type']),
         "instances": job_info['instances'],
         "cpus": job_info['cpu'],
         "mem": job_info['memory'],
@@ -53,7 +53,7 @@ def send_job(job_info):
         r = requests.post(url, data=json.dumps(data_packet))
         if r.ok:
             return True, "success!"
-        return False, "Failed status: %s" % str(r.status_code)
+        return False, "Failed status: %s; MSG: %s" % (str(r.status_code), r.content)
     except requests.ConnectionError:
         return False, "Failed to connect"
 # ubuntu@172:~$ http -v PUT http://localhost:8080/v2/apps/demo?force=true @cpywww.json
@@ -74,8 +74,8 @@ def home(request):
                                 validator.clean_data['title'],
                                 BASE_DOMAIN
                             )
-                if "env" in data:
-                    for val in data["env"]:
+                if "env_vars" in data:
+                    for val in data["env_vars"]:
                         if "name" in val and val["name"] == "domain":
                             domain = val["value"]
                 
@@ -92,6 +92,7 @@ def home(request):
                 }
                 success, msg = send_job(validator.clean_data)
                 if success:
+                    result["msg"] = msg
                     return HttpResponse(
                             simplejson.dumps(result), 
                             content_type="application/json")
